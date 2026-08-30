@@ -1,0 +1,6 @@
+{"readingType":"Seismic","data":{"stationId":"ST_1","timestamp":0.0,"accelerationX_g":0.0,"accelerationY_g":0.0,"accelerationZ_g":0.0,"pWaveArrivalTime":0.3473271131515503,"sWaveArrivalTime":0.5954179167747498}}
+{"readingType":"Seismic","data":{"stationId":"ST_3","timestamp":0.0,"accelerationX_g":0.0,"accelerationY_g":0.0,"accelerationZ_g":0.0,"pWaveArrivalTime":0.46839264035224917,"sWaveArrivalTime":0.8029588460922241}}
+{"readingType":"Seismic","data":{"stationId":"ST_2","timestamp":0.0,"accelerationX_g":0.0,"accelerationY_g":0.0,"accelerationZ_g":0.0,"pWaveArrivalTime":0.13043756783008576,"sWaveArrivalTime":0.22360727190971375}}
+{"readingType":"Seismic","data":{"stationId":"ST_2","timestamp":0.0,"accelerationX_g":0.0,"accelerationY_g":0.0,"accelerationZ_g":0.0,"pWaveArrivalTime":3.2797508239746095,"sWaveArrivalTime":5.622429847717285}}
+{"readingType":"Seismic","data":{"stationId":"ST_1","timestamp":0.0,"accelerationX_g":0.0,"accelerationY_g":0.0,"accelerationZ_g":0.0,"pWaveArrivalTime":2.915557622909546,"sWaveArrivalTime":4.998098850250244}}
+{"readingType":"Seismic","data":{"stationId":"ST_3","timestamp":0.0,"accelerationX_g":0.0,"accelerationY_g":0.0,"accelerationZ_g":0.0,"pWaveArrivalTime":3.5946524143218996,"sWaveArrivalTime":6.162261486053467}}
