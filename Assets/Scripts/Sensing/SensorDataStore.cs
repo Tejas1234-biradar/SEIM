@@ -18,23 +18,13 @@ public class SensorDataStore : MonoBehaviour
     [Header("JSON Export (for later use as training/replay data)")]
     [Tooltip("When enabled, every recorded reading is also appended as a JSON line to a file on disk.")]
     public bool exportToJsonFile = false;
-    [Tooltip("File name only - saved under the project root /data folder.")]
+    [Tooltip("File name only - saved under the project data folder (D:/Projects/SEIM/data).")]
     public string exportFileName = "sensor_log.jsonl";
     [Tooltip("If true, clears any existing file with this name when Play starts. If false, new readings are appended to whatever's already there.")]
     public bool clearFileOnStart = true;
 
-    private string ExportDirectoryPath
-    {
-        get
-        {
-            string projectRoot = System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, ".."));
-            string exportDirectory = System.IO.Path.Combine(projectRoot, "data");
-            System.IO.Directory.CreateDirectory(exportDirectory);
-            return exportDirectory;
-        }
-    }
-
-    private string ExportFilePath => System.IO.Path.Combine(ExportDirectoryPath, exportFileName);
+    private string ExportDirectory => System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "..", "data"));
+    private string ExportFilePath => System.IO.Path.Combine(ExportDirectory, exportFileName);
 
     private Dictionary<string, SeismicReading> latestSeismic = new();
     private Dictionary<string, List<SeismicReading>> seismicHistory = new();
@@ -53,6 +43,7 @@ public class SensorDataStore : MonoBehaviour
     {
         if (exportToJsonFile)
         {
+            System.IO.Directory.CreateDirectory(ExportDirectory);
             if (clearFileOnStart && System.IO.File.Exists(ExportFilePath))
             {
                 System.IO.File.Delete(ExportFilePath);
@@ -91,6 +82,18 @@ public class SensorDataStore : MonoBehaviour
         if (list.Count > MAX_HISTORY) list.RemoveAt(0);
 
         AppendJsonLine("Seismic", reading);
+
+        // Feed the raw reading to the edge processor's per-station STA/LTA
+        // detector - this is where "dumb sensor data" becomes "detected event."
+        // The store itself never computes arrival times.
+        if (EpicenterProcessorNode.Instance != null)
+        {
+            Station station = StationNetwork.Instance?.GetStationById(reading.stationId);
+            if (station != null)
+            {
+                EpicenterProcessorNode.Instance.ProcessRawReading(reading, station.transform.position);
+            }
+        }
     }
 
     public bool TryGetLatestSeismic(string stationId, out SeismicReading reading)

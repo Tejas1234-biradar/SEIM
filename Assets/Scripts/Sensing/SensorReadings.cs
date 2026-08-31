@@ -12,6 +12,12 @@ using UnityEngine;
 /// Strong-motion accelerometer reading (land station, ShakeAlert-style).
 /// Real units report 3-axis acceleration, not a single number - East-West,
 /// North-South, and Up-Down are independent readings.
+///
+/// DELIBERATELY DUMB: this is exactly what a real accelerometer outputs -
+/// raw acceleration, nothing else. It has NO concept of "arrival time" or
+/// "epicenter" - a real sensor doesn't know those things either. Detecting
+/// an arrival from this raw stream is the EDGE PROCESSOR's job
+/// (see PWaveDetector.cs), not the sensor's.
 /// </summary>
 [Serializable]
 public struct SeismicReading
@@ -21,8 +27,6 @@ public struct SeismicReading
     public float accelerationX_g; // East-West
     public float accelerationY_g; // Up-Down
     public float accelerationZ_g; // North-South
-    public float pWaveArrivalTime; // seconds since quake origin, -1 if not yet arrived
-    public float sWaveArrivalTime; // seconds since quake origin, -1 if not yet arrived
 
     /// <summary>Combined magnitude of the 3-axis reading - convenience for code that just wants "how strong."</summary>
     public float Magnitude => Mathf.Sqrt(accelerationX_g * accelerationX_g
@@ -40,8 +44,9 @@ public struct GnssReading
 {
     public string stationId;
     public float timestamp;
-    public float displacementX_m;
-    public float displacementZ_m; // horizontal displacement, the primary signal GNSS adds
+    public float displacementX_m; // horizontal, East-West
+    public float displacementZ_m; // horizontal, North-South - the primary signal GNSS adds
+    public float displacementY_m; // vertical - real GNSS units measure this too, typically lower precision than horizontal
 }
 
 /// <summary>
