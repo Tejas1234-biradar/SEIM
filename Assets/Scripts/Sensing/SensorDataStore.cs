@@ -23,6 +23,10 @@ public class SensorDataStore : MonoBehaviour
     [Tooltip("If true, clears any existing file with this name when Play starts. If false, new readings are appended to whatever's already there.")]
     public bool clearFileOnStart = true;
 
+    [Header("MQTT Export")]
+    [Tooltip("When enabled, every recorded reading is published to the MQTT broker.")]
+    public bool publishToMqtt = true;
+
     private string ExportDirectory => System.IO.Path.GetFullPath(System.IO.Path.Combine(Application.dataPath, "..", "data"));
     private string ExportFilePath => System.IO.Path.Combine(ExportDirectory, exportFileName);
 
@@ -53,20 +57,29 @@ public class SensorDataStore : MonoBehaviour
     }
 
     /// <summary>
-    /// Appends one JSON line to the export file, tagged with a "readingType"
-    /// so a single file can hold multiple sensor types and still be parsed
-    /// unambiguously later (e.g. for Layer 3 training data generation).
+    /// Outputs one reading: publishes the raw reading struct to MQTT (if publishToMqtt is enabled)
+    /// and/or appends a tagged JSON line to the export file (if exportToJsonFile is enabled).
+    /// Serializes the raw struct once and reuses it for both targets.
     /// </summary>
     private void AppendJsonLine(string readingType, object reading)
     {
-        if (!exportToJsonFile) return;
+        if (!exportToJsonFile && !publishToMqtt) return;
 
-        // Wrap in a small envelope so downstream parsing knows which struct
-        // this line deserializes into, without guessing from field names.
+        // Serialize the raw reading struct once
         string innerJson = JsonUtility.ToJson(reading);
-        string line = $"{{\"readingType\":\"{readingType}\",\"data\":{innerJson}}}";
 
-        System.IO.File.AppendAllText(ExportFilePath, line + "\n");
+        // Publish raw reading payload over MQTT
+        if (publishToMqtt && MqttPublisher.Instance != null)
+        {
+            MqttPublisher.Instance.Publish(readingType, innerJson);
+        }
+
+        // Wrap in envelope for local file export if enabled
+        if (exportToJsonFile)
+        {
+            string line = $"{{\"readingType\":\"{readingType}\",\"data\":{innerJson}}}";
+            System.IO.File.AppendAllText(ExportFilePath, line + "\n");
+        }
     }
 
     // ---------- Seismic ----------
