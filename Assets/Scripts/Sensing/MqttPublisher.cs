@@ -94,18 +94,20 @@ public class MqttPublisher : MonoBehaviour
     }
 
     /// <summary>
-    /// Publishes a raw JSON payload for the specified reading type to topic:
-    ///   sensors/{readingType}/readings
-    /// using QoS 0 (at-most-once).
+    /// Publishes a raw JSON payload using QoS 0 (at-most-once).
+    /// If topicOrReadingType contains '/', it is treated as an explicit topic path (e.g. "detections/Epicenter/events").
+    /// Otherwise, it defaults to the sensor topic convention: "sensors/{topicOrReadingType}/readings".
     /// </summary>
-    public void Publish(string readingType, string jsonPayload)
+    public void Publish(string topicOrReadingType, string jsonPayload)
     {
         if (string.IsNullOrEmpty(jsonPayload))
         {
             return;
         }
 
-        string topic = $"sensors/{readingType}/readings";
+        string topic = topicOrReadingType.Contains("/")
+            ? topicOrReadingType
+            : $"sensors/{topicOrReadingType}/readings";
         byte[] payloadBytes = Encoding.UTF8.GetBytes(jsonPayload);
 
         // Basic reconnect logic: if disconnected, attempt one reconnect

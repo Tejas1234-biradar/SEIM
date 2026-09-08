@@ -28,6 +28,25 @@ The simulation connects to `disaster-backend` (Mosquitto MQTT broker â†’ Kafka â
   (e.g., `sensors/Seismic/readings`, `sensors/Gnss/readings`) using QoS 0.
 - If the broker is unreachable, `MqttPublisher` logs a warning and allows the local simulation to continue without interruption. When the broker becomes available, it automatically reconnects.
 
+### Epicenter Detection Events
+
+In addition to raw sensor data, `EpicenterProcessorNode` computes derived epicenter estimates using multi-station P-wave trilateration and publishes them to:
+```
+detections/Epicenter/events
+```
+Each event contains:
+```json
+{
+  "eventId": "...",
+  "detectedAtTime": 8.42,
+  "estimatedEpicenterX": 15.02,
+  "estimatedEpicenterZ": 7.98,
+  "contributingStationIds": ["ST_01", "ST_02", "ST_03"],
+  "contributingStationCount": 3,
+  "pWaveSpeedKmS": 6.0
+}
+```
+
 ### Verification
 
 1. **Start the backend** in `disaster-backend` (or `SEIM-Backend`):
@@ -35,10 +54,16 @@ The simulation connects to `disaster-backend` (Mosquitto MQTT broker â†’ Kafka â
    docker compose up -d
    ```
 2. **Run the simulation in Unity**:
+2. **Listen for detection events** (optional terminal check):
+   ```bash
+   mosquitto_sub -h localhost -p 11883 -t 'detections/Epicenter/events'
+   ```
+3. **Run the simulation in Unity**:
    - Open `Assets/Scenes/test.unity`.
    - Enter **Play Mode**.
    - Select the GameObject with `DumbSensorPipelineTest`, right-click the component header in the Inspector, and click **Run Dumb Sensor Pipeline Test** (or use the menu bar: **SEIM > Run Dumb Sensor Test**).
 3. **Verify message arrival at the backend**:
+4. **Verify message arrival at the backend**:
    - **Kafka Stream**:
      ```bash
      docker compose exec kafka /opt/kafka/bin/kafka-console-consumer.sh \
@@ -51,4 +76,5 @@ The simulation connects to `disaster-backend` (Mosquitto MQTT broker â†’ Kafka â
      docker compose exec postgres psql -U disaster -d disaster -c \
        "SELECT event_id, reading_type, station_id, timestamp, payload FROM sensor_readings ORDER BY received_at DESC LIMIT 10;"
      ```
+
 

@@ -30,6 +30,7 @@ public class EpicenterProcessorNode : MonoBehaviour
     public int minStationsToLocate = 3;
 
     private Dictionary<string, PWaveDetector> detectors = new();
+    private float latestReadingTimestamp = 0f;
 
     public Vector2? LastEstimatedEpicenter { get; private set; }
 
@@ -45,6 +46,8 @@ public class EpicenterProcessorNode : MonoBehaviour
     /// </summary>
     public void ProcessRawReading(SeismicReading reading, Vector3 stationWorldPosition)
     {
+        latestReadingTimestamp = reading.timestamp;
+
         if (!detectors.ContainsKey(reading.stationId))
         {
             detectors[reading.stationId] = new PWaveDetector(
@@ -57,6 +60,7 @@ public class EpicenterProcessorNode : MonoBehaviour
         {
             Debug.Log($"[EpicenterProcessorNode] {reading.stationId} P-wave arrival detected at t={reading.timestamp:F3}s");
             TryLocateEpicenter();
+            TryLocateEpicenter(reading.timestamp);
         }
         else if (trigger == PhaseTrigger.SWave)
         {
@@ -67,8 +71,10 @@ public class EpicenterProcessorNode : MonoBehaviour
     }
 
     private void TryLocateEpicenter()
+    public void TryLocateEpicenter(float detectedAtTime = -1f)
     {
         List<Trilateration.StationReading> triggered = new List<Trilateration.StationReading>();
+        List<string> contributingStationIds = new List<string>();
 
         foreach (var kvp in detectors)
         {
@@ -83,6 +89,7 @@ public class EpicenterProcessorNode : MonoBehaviour
                     position = pos2D,
                     pWaveArrivalTime = kvp.Value.PWaveArrivalTime
                 });
+                contributingStationIds.Add(kvp.Key);
             }
         }
 
@@ -91,6 +98,28 @@ public class EpicenterProcessorNode : MonoBehaviour
             Vector2 estimated = Trilateration.EstimateEpicenter(triggered.ToArray(), pWaveSpeedKmS);
             LastEstimatedEpicenter = estimated;
             Debug.Log($"[EpicenterProcessorNode] Located epicenter from {triggered.Count} stations: {estimated}");
+
+            float eventTime = detectedAtTime >= 0f
+                ? detectedAtTime
+                : (latestReadingTimestamp > 0f ? latestReadingTimestamp : Time.time);
+
+            EpicenterDetectionEvent detectionEvent = new EpicenterDetectionEvent
+            {
+                eventId = System.Guid.NewGuid().ToString(),
+                detectedAtTime = eventTime,
+                estimatedEpicenterX = estimated.x,
+                estimatedEpicenterZ = estimated.y,
+                contributingStationIds = contributingStationIds.ToArray(),
+                contributingStationCount = contributingStationIds.Count,
+                pWaveSpeedKmS = pWaveSpeedKmS
+            };
+
+            string jsonPayload = JsonUtility.ToJson(detectionEvent);
+
+            if (MqttPublisher.Instance != null)
+            {
+                MqttPublisher.Instance.Publish("detections/Epicenter/events", jsonPayload);
+            }
         }
     }
 
@@ -111,5 +140,22 @@ public class EpicenterProcessorNode : MonoBehaviour
     {
         foreach (var d in detectors.Values) d.Reset();
         LastEstimatedEpicenter = null;
+        latestReadingTimestamp = 0f;
     }
+}
+
+/// <summary>
+/// Plain JSON payload shape for published epicenter detection events.
+/// Published to: detections/Epicenter/events
+/// </summary>
+[System.Serializable]
+public struct EpicenterDetectionEvent
+{
+    public string eventId;
+    public float detectedAtTime;
+    public float estimatedEpicenterX;
+    public float estimatedEpicenterZ;
+    public string[] contributingStationIds;
+    public int contributingStationCount;
+    public float pWaveSpeedKmS;
 }
