@@ -59,7 +59,6 @@ public class EpicenterProcessorNode : MonoBehaviour
         if (trigger == PhaseTrigger.PWave)
         {
             Debug.Log($"[EpicenterProcessorNode] {reading.stationId} P-wave arrival detected at t={reading.timestamp:F3}s");
-            TryLocateEpicenter();
             TryLocateEpicenter(reading.timestamp);
         }
         else if (trigger == PhaseTrigger.SWave)
@@ -70,7 +69,6 @@ public class EpicenterProcessorNode : MonoBehaviour
         }
     }
 
-    private void TryLocateEpicenter()
     public void TryLocateEpicenter(float detectedAtTime = -1f)
     {
         List<Trilateration.StationReading> triggered = new List<Trilateration.StationReading>();
@@ -95,7 +93,15 @@ public class EpicenterProcessorNode : MonoBehaviour
 
         if (triggered.Count >= minStationsToLocate)
         {
-            Vector2 estimated = Trilateration.EstimateEpicenter(triggered.ToArray(), pWaveSpeedKmS);
+            // Arrival times are generated in kilometres, while station
+            // positions are Unity world units. Convert the wave speed so
+            // trilateration compares distances in one coordinate system.
+            float kmPerUnit = SimManager.Instance != null ? SimManager.Instance.KmPerUnit : 1f;
+            float pWaveSpeedWorldUnitsPerSecond = kmPerUnit > 0f
+                ? pWaveSpeedKmS / kmPerUnit
+                : pWaveSpeedKmS;
+            Vector2 estimated = Trilateration.EstimateEpicenter(
+                triggered.ToArray(), pWaveSpeedWorldUnitsPerSecond);
             LastEstimatedEpicenter = estimated;
             Debug.Log($"[EpicenterProcessorNode] Located epicenter from {triggered.Count} stations: {estimated}");
 

@@ -443,6 +443,7 @@ GameObject:
   m_Component:
   - component: {fileID: 955401474}
   - component: {fileID: 955401473}
+  - component: {fileID: 955401475}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -457,7 +458,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 955401472}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25e6a68ab3690984ca82fe16744f66cc, type: 3}
   m_Name: 
@@ -487,6 +488,33 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &955401475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955401472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f87eecb6d64d90b87caa3a7246ea11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimManager
+  currentState: 0
+  magnitude: 0
+  epicenterSurfacePos: {x: 0, y: 0}
+  depthKm: 10
+  isOffshore: 0
+  elapsedTime: 0
+  eventDurationSeconds: 30
+  tsunamiMinMagnitude: 7
+  tsunamiMaxDepthKm: 50
+  tsunamiDelaySeconds: 3
+  offshoreBoundaryX: 0
+  testMagnitude: 6.5
+  testEpicenter: {x: 15, y: 8}
+  testDepthKm: 10
+  testIsOffshore: 0
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
