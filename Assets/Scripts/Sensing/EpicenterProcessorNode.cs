@@ -33,6 +33,19 @@ public class EpicenterProcessorNode : MonoBehaviour
     private float latestReadingTimestamp = 0f;
 
     public Vector2? LastEstimatedEpicenter { get; private set; }
+    public int TriggeredPStationCount
+    {
+        get
+        {
+            int count = 0;
+            foreach (PWaveDetector detector in detectors.Values)
+            {
+                if (detector.HasTriggeredP)
+                    count++;
+            }
+            return count;
+        }
+    }
 
     private void Awake()
     {

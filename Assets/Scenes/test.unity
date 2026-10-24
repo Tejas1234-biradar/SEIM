@@ -276,7 +276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Station
   stationId: ST_3
-  stationType: 1
+  stationType: 0
 --- !u!4 &428634873
 Transform:
   m_ObjectHideFlags: 0
@@ -286,7 +286,7 @@ Transform:
   m_GameObject: {fileID: 428634871}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.74, y: 0, z: -16.6249}
+  m_LocalPosition: {x: 10, y: 0, z: 5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -332,7 +332,7 @@ Transform:
   m_GameObject: {fileID: 571608914}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.52883, y: 0, z: -16.6249}
+  m_LocalPosition: {x: 20, y: 0, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -384,6 +384,113 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 10.52883, y: 0, z: -13.97}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &741566352
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 741566354}
+  - component: {fileID: 741566353}
+  m_Layer: 0
+  m_Name: SimManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &741566353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741566352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72f87eecb6d64d90b87caa3a7246ea11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimManager
+  currentState: 0
+  magnitude: 0
+  epicenterSurfacePos: {x: 10, y: 10}
+  depthKm: 10
+  kmPerUnit: 1
+  isOffshore: 0
+  elapsedTime: 0
+  eventDurationSeconds: 30
+  tsunamiMinMagnitude: 7
+  tsunamiMaxDepthKm: 50
+  tsunamiDelaySeconds: 3
+  offshoreBoundaryX: 0
+  testMagnitude: 6.5
+  testEpicenter: {x: 15, y: 8}
+  testDepthKm: 10
+  testIsOffshore: 0
+--- !u!4 &741566354
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741566352}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 13.89632, y: 0, z: -10.575}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &827279072
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 827279074}
+  - component: {fileID: 827279073}
+  m_Layer: 0
+  m_Name: SeismicFeeder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &827279073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827279072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0911c3b4413888141ad5868fb97aa30e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StationSeismicFeeder
+  sampleIntervalSeconds: 0.1
+  logPublishing: 1
+  siteClass: 1
+--- !u!4 &827279074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827279072}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 13.89632, y: 0, z: -10.575}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -442,8 +549,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 955401474}
-  - component: {fileID: 955401473}
-  - component: {fileID: 955401475}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -451,28 +556,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &955401473
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 955401472}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25e6a68ab3690984ca82fe16744f66cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Layer1IntegrationTest
-  fakeEpicenter: {x: 15, y: 8}
-  pWaveSpeed: 6
-  sWaveSpeed: 3.5
-  noiseFloorG: 0.002
-  pWaveBurstAmplitudeG: 0.15
-  sWaveBurstAmplitudeG: 0.5
-  sampleIntervalSeconds: 0.05
-  streamDurationSeconds: 10
-  alsoTestGnss: 1
-  placeholderMaxDisplacementM: 0.4
 --- !u!4 &955401474
 Transform:
   m_ObjectHideFlags: 0
@@ -488,33 +571,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &955401475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 955401472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72f87eecb6d64d90b87caa3a7246ea11, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SimManager
-  currentState: 0
-  magnitude: 0
-  epicenterSurfacePos: {x: 0, y: 0}
-  depthKm: 10
-  isOffshore: 0
-  elapsedTime: 0
-  eventDurationSeconds: 30
-  tsunamiMinMagnitude: 7
-  tsunamiMaxDepthKm: 50
-  tsunamiDelaySeconds: 3
-  offshoreBoundaryX: 0
-  testMagnitude: 6.5
-  testEpicenter: {x: 15, y: 8}
-  testDepthKm: 10
-  testIsOffshore: 0
 --- !u!1 &961739749
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,6 +790,37 @@ MonoBehaviour:
   brokerHost: localhost
   brokerPort: 11883
   timeoutMs: 3000
+--- !u!1 &1236679746
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1236679747}
+  m_Layer: 0
+  m_Name: GameObject (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1236679747
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1236679746}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 13.89632, y: 0, z: -10.575}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1360379069
 GameObject:
   m_ObjectHideFlags: 0
@@ -764,7 +851,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Station
   stationId: GameObject (1)
-  stationType: 0
+  stationType: 1
 --- !u!4 &1360379071
 Transform:
   m_ObjectHideFlags: 0
@@ -820,7 +907,7 @@ Transform:
   m_GameObject: {fileID: 1661877655}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 10.52883, y: 0, z: -13.97}
+  m_LocalPosition: {x: 0, y: 0, z: 15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -840,3 +927,6 @@ SceneRoots:
   - {fileID: 955401474}
   - {fileID: 577217103}
   - {fileID: 1360379071}
+  - {fileID: 741566354}
+  - {fileID: 827279074}
+  - {fileID: 1236679747}

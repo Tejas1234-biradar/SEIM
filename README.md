@@ -2,6 +2,34 @@
 
 Unity-based disaster response and sensor network simulation project (`disaster-simulation`).
 
+## Automated Sensor Placement
+
+Sensor placement starts automatically at scene load through the runtime bootstrap. Configure
+`Assets/Resources/SensorPlacementConfig.asset` before Play mode:
+
+- Select either a geographic boundary polygon (at least three latitude/longitude points) or an area
+  with a geographic center and positive width/height in meters. An area is converted to a rectangular
+  GeoJSON boundary for the backend placement endpoint.
+- The Unity request uses the backend contract: `boundary` (GeoJSON Polygon with coordinates ordered
+  `[longitude, latitude]`), `sensorRadiusKm`, `coverageMultiplicity` (from Unity's `k` setting), and
+  `gridResolutionMeters`. The response's `sensors` provide `lat`/`lon` and projected `x`/`y`;
+  returned coordinates are cached under `Application.persistentDataPath` for fallback.
+- Set the geographic origin and `worldUnitsPerMeter` so backend positions map onto the Unity city
+  model. Keep this scale consistent with `SimManager.KmPerUnit`:
+  `worldUnitsPerMeter = 1 / (1000 * KmPerUnit)`. `Terrain.activeTerrain` is sampled for each placed
+  sensor when its position lies inside the Terrain bounds.
+
+On a successful placement, seismic stations are replaced using `Resources/VirtualSensor.prefab` and
+the existing `Station`/`StationNetwork` pipeline. In Play mode, select `SensorPlacementServices` and
+use **Compute Sensor Placement** in the `SensorPlacementClient` Inspector to rerun the HTTP request.
+The runtime HUD toggles the coverage overlay and metrics; the overlay colors grid cells by coverage
+multiplicity (red: zero, yellow: 1..k-1, green: at least k) and draws sensor-radius discs. The
+`SensorPlacementValidation` component's **Run Sensor Coverage Earthquake Test** context action starts
+a simulated quake and logs actual P-wave detections beside predicted radius coverage.
+
+The backend's estimate-only `areaKm2` mode returns no sensor placements, so use the configured area
+or polygon boundary for the Unity client.
+
 ## Connecting to Backend via MQTT
 
 The simulation connects to `disaster-backend` (Mosquitto MQTT broker → Kafka → PostgreSQL) to stream raw sensor telemetry in real time.
@@ -76,5 +104,3 @@ Each event contains:
      docker compose exec postgres psql -U disaster -d disaster -c \
        "SELECT event_id, reading_type, station_id, timestamp, payload FROM sensor_readings ORDER BY received_at DESC LIMIT 10;"
      ```
-
-
